@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GOAT-R Score Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      padding: 10px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      display: block;
+      font-size: 1.1em;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 15px;
+      font-size: 1.2em;
+      background: #005fa3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #004080;
+    }
+
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 1.5em;
+      min-height: 70px;
+      background-color: #eef4fa;
+      color: #333;
+      text-align: center;
+      font-weight: bold;
+      word-wrap: break-word;
+    }
+
+    p.disclaimer {
+      font-size: 0.9em;
+      margin-top: 20px;
+      color: #555;
+      text-align: center;
+    }
+
+    @media (max-width: 400px) {
+      h1 { font-size: 1.5em; }
+      button { font-size: 1em; padding: 12px; }
+      .result { font-size: 1.2em; padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>GOAT-R Score Calculator</h1>
+
+    <label>Age (years)</label>
+    <input type="number" id="age" min="1" max="110" placeholder="Enter age (1-110)" />
+
+    <label>History of Cardiac Disease</label>
+    <select id="cardiac">
+      <option value="0">No</option>
+      <option value="1">Yes</option>
+    </select>
+
+    <label>Baseline mRS</label>
+    <input type="number" id="mrs" min="0" max="5" placeholder="Enter baseline mRS (0-5)" />
+
+    <label>Baseline NIHSS</label>
+    <input type="number" id="nihss" min="0" max="42" placeholder="Enter NIHSS (0-42)" />
+
+    <label>GFR (mL/min/1.73 m²)</label>
+    <input type="number" id="gfr" min="0" max="120" placeholder="Enter GFR (0-120)" />
+
+    <button onclick="calculateScore()">Calculate GOAT-R</button>
+
+    <div class="result" id="result"></div>
+
+    <p class="disclaimer">
+      For educational and research purposes only. Not for clinical decision-making.
+    </p>
+  </div>
+
+  <script>
+    function calculateScore() {
+      let score = 0;
+
+      const age = Number(document.getElementById("age").value);
+      const cardiac = Number(document.getElementById("cardiac").value);
+      const mrs = Number(document.getElementById("mrs").value);
+      const nihss = Number(document.getElementById("nihss").value);
+      const gfr = Number(document.getElementById("gfr").value);
+
+      // Validate inputs
+      if (
+        !age || age < 1 || age > 110 ||
+        (!mrs && mrs !== 0) || mrs < 0 || mrs > 5 ||
+        (!nihss && nihss !== 0) || nihss < 0 || nihss > 42 ||
+        (!gfr && gfr !== 0) || gfr < 0 || gfr > 120
+      ) {
+        document.getElementById("result").innerHTML =
+          "<span style='color:red;'>Please enter all values within valid ranges:<br>" +
+          "Age: 1-110, mRS: 0-5, NIHSS: 0-42, GFR: 0-120</span>";
+        return;
+      }
+
+      // GOAT-R scoring
+      if (age > 75) score += 1;
+      if (cardiac === 1) score += 1;
+      if (mrs > 2) score += 1;
+      if (nihss >= 20) score += 1;
+      if (gfr < 40) score += 1;
+
+      // Display score only
+      document.getElementById("result").innerHTML = `<strong>GOAT-R Score:</strong> ${score} / 5`;
+    }
+  </script>
+</body>
+</html>
